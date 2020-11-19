@@ -100,14 +100,8 @@ class UsersService{
   Future<APIResponse<Message>> uploadImg(fileName,File file) async{
     String api = '${APIAddress.api}/api/v1/users/images/';
     if(token!=null){
-//      var headers = {
-//        'Authorization': 'Token $token',
-//      };
       var headerss = Map<String, String>();
       headerss['Authorization'] = 'Token $token';
-//      var map = new Map<String, dynamic>();
-//      map['image'] = base64Image;
-//      map['name'] = fileName.toString();
       var request = http.MultipartRequest("POST", Uri.parse(api));
       request.fields["name"] = fileName;
       request.headers.addAll(headerss);
@@ -116,26 +110,12 @@ class UsersService{
       return request.send()
           .then((data){
         if(data.statusCode == 200){
-//          var responseData;
-//          data.stream.toBytes().then((value) => {
-//            responseData = value
-//          });
-//          var responseString = String.fromCharCodes(responseData);
-//          print(responseString);
-//          return getMsgFromResponse(data);
           return APIResponse<Message>(
               data: Message(
                   message: "uploaded successful, please wait for approval"
               )
           );
         }
-//        final jsonData = json.decode(data.body);
-//        var respData;
-//        data.stream.toBytes().then((value) => {
-//          respData = value
-//        });
-//        var responseString = String.fromCharCodes(respData);
-//        print(responseString);
         return APIResponse<Message>(error: true, errorMessage: "Error occurred can not be uploaded");
       })
           .catchError((error)=>APIResponse<Message>(error: true, errorMessage: '$error'));
@@ -146,10 +126,31 @@ class UsersService{
     return await APIResponse<Message>(error: true, errorMessage: "Unable to read provided token, failed to load data");
   }
 
-  Future<APIResponse<Message>> getMsgFromResponse(data) async{
-    var responseData = await data.stream.toBytes();
-    var responseString = String.fromCharCodes(responseData);
-    return APIResponse<Message>(data: Message(message: responseString));
+  Future<APIResponse<Message>> deleteImg(img_id){
+    String api = '${APIAddress.api}/api/v1/users/images/$img_id/';
+    if(token!=null){
+      var headers = {
+        'Authorization': 'Token $token',
+      };
+      return http.delete(api, headers: headers)
+          .then((data){
+        if(data.statusCode == 200){
+          final jsonData = json.decode(data.body);
+          return APIResponse<Message>(
+              data: Message(
+                  message: jsonData['message']
+              )
+          );
+        }
+        final jsonData = json.decode(data.body);
+        return APIResponse<Message>(error: true, errorMessage: jsonData['message']);
+      })
+          .catchError((error)=>APIResponse<Message>(error: true, errorMessage: '$error'));
+    }
+    return deleteImgNoToken();
+  }
+  Future<APIResponse<Message>> deleteImgNoToken() async{
+    return await APIResponse<Message>(error: true, errorMessage: "Unable to read provided token, failed to load data");
   }
 
 }
