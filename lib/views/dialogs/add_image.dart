@@ -39,6 +39,17 @@ class _AddImageState extends State<AddImage> {
         if(snapshot.connectionState == ConnectionState.done && snapshot.hasData){
           tmpFile = snapshot.data;
           base64Image = base64Encode(snapshot.data.readAsBytesSync());
+          int sizeInBytes = tmpFile.lengthSync();
+          double sizeInMb = sizeInBytes/(1024*1024);
+          if(sizeInMb>10){
+            return Center(child: Text("Image size exceeds 10MB",
+              style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16
+              ),
+            ),);
+          }
           return Flexible(child: Image.file(snapshot.data, fit: BoxFit.fill,));
         }
         else if(snapshot.error != null){
@@ -60,6 +71,14 @@ class _AddImageState extends State<AddImage> {
     if(tmpFile==null){
       setState(() {
         _status = "Please select an image";
+      });
+      return;
+    }
+    int sizeInBytes = tmpFile.lengthSync();
+    double sizeInMb = sizeInBytes/(1024*1024);
+    if(sizeInMb>10){
+      setState(() {
+        _status = "Image size exceeds 10 MB";
       });
       return;
     }
@@ -92,7 +111,7 @@ class _AddImageState extends State<AddImage> {
   Widget build(BuildContext context) {
     return AlertDialog(
       elevation: 4,
-      title: Text("upload an image"),
+      title: Text("upload an image, max size 10MB"),
       content: Builder(
         builder: (_){
           if(_isLoading){

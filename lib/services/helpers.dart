@@ -1,4 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hailoga/models/users_model.dart';
 
 class GetToken{
   static const _storage = FlutterSecureStorage();
@@ -17,4 +18,8 @@ class APIAddress{
   static String api = 'http://192.168.44.254:8000';
 
   APIAddress();
+}
+
+class GetUser{
+  static UsersModel userModel;
 }

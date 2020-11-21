@@ -15,29 +15,50 @@ class _DeleteImageState extends State<DeleteImage> {
   UsersService get service => GetIt.I<UsersService>();
   APIResponse<Message> _apiResponse;
   bool _isLoading = false;
+
+  delImage() async{
+    setState(() {
+      _isLoading = true;
+    });
+    _apiResponse = await service.deleteImg(widget.imgId);
+    setState(() {
+      _isLoading = false;
+    });
+    if(_apiResponse!=null){
+      if(!_apiResponse.error){
+        Future.delayed(Duration(milliseconds: 300),popDialog);
+      }
+    }
+  }
+  void popDialog(){
+    Navigator.pop(context,1);
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       elevation: 4,
       title: Text("Are you sure to delete this image?"),
       titleTextStyle: TextStyle(
-        color: Colors.redAccent
+        color: Colors.redAccent,
+        fontSize: 17,
+        fontWeight: FontWeight.w600
       ),
-      content: Builder(
-        builder: (_){
-          if(_isLoading){
-            return Center(child: CircularProgressIndicator(),);
-          }
-          if(_apiResponse!=null){
-            if(_apiResponse.error){
-              return Center(child: Text(_apiResponse.errorMessage),);
+      content: Container(
+        child: Builder(
+          builder: (_){
+            if(_isLoading){
+              return SizedBox(height:100,child: Center(child: CircularProgressIndicator()));
             }
-            return Center(child: Text(_apiResponse.data.message),);
-          }
-          return Container(
-            child: Text(""),
-          );
-        },
+            if(_apiResponse!=null){
+              if(_apiResponse.error){
+                return Text(_apiResponse.errorMessage);
+              }
+              return Text(_apiResponse.data.message);
+            }
+            return Text("");
+          },
+        ),
       ),
       actions: [
         FlatButton(
@@ -48,7 +69,7 @@ class _DeleteImageState extends State<DeleteImage> {
         ),
         FlatButton(
           onPressed: () {
-
+            delImage();
           },
           child: Text("Yes"),
         ),

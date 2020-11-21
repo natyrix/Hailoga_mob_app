@@ -6,6 +6,7 @@ import 'package:hailoga/services/helpers.dart';
 import 'package:hailoga/services/users_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hailoga/views/dialogs/add_image.dart';
+import 'package:hailoga/views/dialogs/delete_image.dart';
 
 
 class UserImages extends StatefulWidget {
@@ -24,7 +25,7 @@ class _UserImagesState extends State<UserImages> {
   _displayAddImageDialog(BuildContext context) async{
     return await showDialog(
         context: context,
-        barrierDismissible: false,
+//        barrierDismissible: false,
         builder: (context){
           return WillPopScope(
             child: AddImage(),
@@ -32,9 +33,18 @@ class _UserImagesState extends State<UserImages> {
           );
         }
     );
-//    if(data==1){
-//      _fetchImgs();
-//    }
+  }
+  _displayDeleteImgDialog(BuildContext context, imgId) async{
+    var data = await showDialog(
+      context: context,
+//      barrierDismissible: false,
+      builder: (context){
+        return WillPopScope(child: DeleteImage(imgId: imgId,), onWillPop: _willPopCallBack);
+      }
+    );
+    if(data == 1){
+      _fetchImgs();
+    }
   }
 
 
@@ -68,23 +78,23 @@ class _UserImagesState extends State<UserImages> {
           return ListView.separated(
               itemBuilder: (_, index){
                 return GestureDetector(
-                  onLongPress: (){
-                    print("Long pressed");
+                  onDoubleTap: (){
+                    _displayDeleteImgDialog(context, _apiResponse.data[index].id);
                   },
                   child: Padding(
                   padding: const EdgeInsets.all(2.0),
-                  child: Card(
-                    elevation: 8,
-                    child: Container(
-                      width: screenWidth-2,
-                      height: 300,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              fit: BoxFit.contain,
-                              image: CachedNetworkImageProvider("${APIAddress.api}${_apiResponse.data[index].imageLocation}")
-                          )
+                    child: Card(
+                      elevation: 8,
+                      child: Container(
+                        width: screenWidth-2,
+                        height: 300,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                fit: BoxFit.contain,
+                                image: CachedNetworkImageProvider("${APIAddress.api}${_apiResponse.data[index].imageLocation}")
+                            )
+                        ),
                       ),
-                    ),
                   ),
                 ),
                 );

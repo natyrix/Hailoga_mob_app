@@ -1,11 +1,15 @@
 import 'package:bloc/bloc.dart';
 import 'package:hailoga/views//pages/homepage.dart';
+import 'package:hailoga/views/pages/appointmetns.dart';
+import 'package:hailoga/views/pages/bookings.dart';
 import 'package:hailoga/views/pages/gallery.dart';
 import 'package:hailoga/views/pages/myaccounts.dart';
 import 'package:hailoga/views/pages/myorders.dart';
+import 'package:hailoga/views/pages/notifications.dart';
 import 'package:hailoga/views/pages/vendors.dart';
 
-enum NavigationEvents{HomePageClickedEvent, MyAccountClickedEvent,MyOrdersClickedEvent, VendorsClickedEvent, GalleryClickedEvent}
+enum NavigationEvents{HomePageClickedEvent, MyAccountClickedEvent,MyOrdersClickedEvent,
+  VendorsClickedEvent, GalleryClickedEvent, NotificationClickedEvent, AppointmentsClickedEvent, BookingsClickedEvent}
 
 abstract class NavigationStates{}
 class NavigationBloc extends Bloc<NavigationEvents, NavigationStates>{
@@ -19,7 +23,7 @@ class NavigationBloc extends Bloc<NavigationEvents, NavigationStates>{
         yield HomePage();
         break;
       case NavigationEvents.MyAccountClickedEvent:
-        yield MyAccontsPage();
+        yield MyAccountsPage();
         break;
       case NavigationEvents.MyOrdersClickedEvent:
         yield MyOrdersPage();
@@ -29,6 +33,15 @@ class NavigationBloc extends Bloc<NavigationEvents, NavigationStates>{
         break;
       case NavigationEvents.GalleryClickedEvent:
         yield Gallery();
+        break;
+      case NavigationEvents.NotificationClickedEvent:
+        yield UserNotifications();
+        break;
+      case NavigationEvents.AppointmentsClickedEvent:
+        yield UsersAppointments();
+        break;
+      case NavigationEvents.BookingsClickedEvent:
+        yield UsersBookings();
         break;
     }
   }

@@ -5,6 +5,7 @@ import 'package:hailoga/models/api_response.dart';
 import 'package:hailoga/models/users_model.dart';
 import 'package:hailoga/services/helpers.dart';
 import 'package:hailoga/services/users_service.dart';
+import 'package:hailoga/views/dialogs/add_video.dart';
 import 'package:video_player/video_player.dart';
 
 class UserVideos extends StatefulWidget {
@@ -20,6 +21,22 @@ class _UserVideosState extends State<UserVideos> {
   VideoPlayerController _controller;
   Future<void> _initializeVideoPlayerFuture;
   List _initializeVideoPlayerFutures = <Future<void>>[];
+
+  Future<bool> _willPopCallBack() async{
+    return Future.value(true);
+  }
+
+  _displayAddVideoDialog(BuildContext context) async{
+    return await showDialog(
+      context: context,
+      builder: (context){
+        return WillPopScope(
+          child: AddVideo(),
+          onWillPop: _willPopCallBack,
+        );
+      }
+    );
+  }
 
   @override
   void initState() {
@@ -117,7 +134,14 @@ class _UserVideosState extends State<UserVideos> {
               separatorBuilder: (_,__)=>Divider(height: 2,color: Colors.transparent,),
               itemCount: _apiResponse.data.length);
         },
-      )
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        backgroundColor: Colors.deepOrangeAccent,
+        onPressed: (){
+//          _displayAddVideoDialog(context);
+        },
+      ),
     );
   }
 }

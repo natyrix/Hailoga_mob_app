@@ -17,7 +17,7 @@ class MenuItem extends StatelessWidget {
               icon,
               color: Colors.cyan,
             ),
-            SizedBox(width: 15,),
+            SizedBox(width: 5,),
             Text(title,style: TextStyle(
               fontWeight: FontWeight.w300,
               fontSize: 20,

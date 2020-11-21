@@ -73,84 +73,112 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                   child: Container(
 //                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     color: const Color(0xFF262AAA),
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(
-                          height: 60,
-                         ),
-                        ListTile(
-                          title: Text("${widget.users.firstName} & ${widget.users.fianceFirstName}", style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w800),),
-                          subtitle: Text(
-                            widget.users.email,
-                            style: TextStyle(
-                                color: Color(0xFF18B5FD), fontSize: 15
+                    child: ListView(
+                      children: [
+                        Column(
+                          children: <Widget>[
+                            SizedBox(
+                              height: 60,
                             ),
-                          ),
-                          leading: CircleAvatar(
-                            child: Icon(
-                              Icons.perm_identity,
+                            ListTile(
+                              title: Text("${widget.users.firstName} & ${widget.users.fianceFirstName}", style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w800),),
+                              subtitle: Text(
+                                widget.users.email,
+                                style: TextStyle(
+                                    color: Color(0xFF18B5FD), fontSize: 15
+                                ),
+                              ),
+                              leading: CircleAvatar(
+                                child: Icon(
+                                  Icons.perm_identity,
+                                  color: Colors.white,
+                                ),
+                                radius: 40,
+                              ),
+                            ),
+                            Divider(
+                              height: 60,
+                              thickness: 0.5,
                               color: Colors.white,
+                              indent: 16,
+                              endIndent: 16,
                             ),
-                            radius: 40,
-                          ),
-                        ),
-                        Divider(
-                          height: 60,
-                          thickness: 0.5,
-                          color: Colors.white,
-                          indent: 16,
-                          endIndent: 16,
-                        ),
-                        MenuItem(
-                          icon: Icons.horizontal_split,
-                          title: "Vendors",
-                          onTap: (){
-                            onIconPressed();
-                            BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.VendorsClickedEvent);
-                          },
-                        ),
-                        MenuItem(
-                          icon: Icons.image,
-                          title: "Gallery",
-                          onTap: (){
-                            onIconPressed();
-                            BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.GalleryClickedEvent);
-                          },
-                        ),
-                        MenuItem(
-                          icon: Icons.person,
-                          title: "My Account",
-                          onTap: (){
-                            onIconPressed();
-                            BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyAccountClickedEvent);
-                          },
-                        ),
-                        MenuItem(
-                          icon: Icons.shopping_basket,
-                          title: "My Orders",
-                          onTap: (){
-                            onIconPressed();
-                            BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyOrdersClickedEvent);
-                          },
-                        ),
-                        MenuItem(
-                          icon: Icons.card_giftcard,
-                          title: "Wishlist",
-                        ),
-                        Divider(
-                          height: 64,
-                          thickness: 0.5,
-                          color: Colors.white,
-                          indent: 16,
-                          endIndent: 16,
-                        ),
-                        MenuItem(
-                          icon: Icons.settings,
-                          title: "Settings",
-                        ),
-                        MenuItem(
-                          icon: Icons.exit_to_app,
-                          title: "Logout",
+                            MenuItem(
+                              icon: Icons.horizontal_split,
+                              title: "Vendors",
+                              onTap: (){
+                                onIconPressed();
+                                BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.VendorsClickedEvent);
+                              },
+                            ),
+                            MenuItem(
+                              icon: Icons.image,
+                              title: "Gallery",
+                              onTap: (){
+                                onIconPressed();
+                                BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.GalleryClickedEvent);
+                              },
+                            ),
+                            MenuItem(
+                              icon: Icons.meeting_room_rounded,
+                              title: "Appointments",
+                              onTap: (){
+                                onIconPressed();
+                                BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.AppointmentsClickedEvent);
+                              },
+                            ),
+                            MenuItem(
+                              icon: Icons.meeting_room_rounded,
+                              title: "Bookings",
+                              onTap: (){
+                                onIconPressed();
+                                BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.BookingsClickedEvent);
+                              },
+                            ),
+                            MenuItem(
+                              icon: Icons.shopping_basket,
+                              title: "My Orders",
+                              onTap: (){
+                                onIconPressed();
+                                BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyOrdersClickedEvent);
+                              },
+                            ),
+                            MenuItem(
+                              icon: Icons.card_giftcard,
+                              title: "Wishlist",
+                            ),
+                            MenuItem(
+                              icon: Icons.notifications,
+                              title: "Notifications",
+                              onTap: (){
+                                onIconPressed();
+                                BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.NotificationClickedEvent);
+                              },
+                            ),
+                            Divider(
+                              height: 64,
+                              thickness: 0.5,
+                              color: Colors.white,
+                              indent: 16,
+                              endIndent: 16,
+                            ),
+                            MenuItem(
+                              icon: Icons.person,
+                              title: "My Account",
+                              onTap: (){
+                                onIconPressed();
+                                BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyAccountClickedEvent);
+                              },
+                            ),
+                            MenuItem(
+                              icon: Icons.settings,
+                              title: "Settings",
+                            ),
+                            MenuItem(
+                              icon: Icons.exit_to_app,
+                              title: "Logout",
+                            ),
+                          ],
                         ),
                       ],
                     ),

@@ -16,6 +16,18 @@ class _GalleryState extends State<Gallery> {
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text("Gallery")),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.info),
+            onPressed: (){
+              Scaffold.of(context).showSnackBar(SnackBar(
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Colors.white,
+                content: Text("Double tap on video or image to delete", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),),
+              ));
+            },
+          )
+        ],
       ),
       body: SafeArea(
         top: false,
