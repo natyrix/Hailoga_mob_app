@@ -1,3 +1,5 @@
+import 'package:hailoga/models/vendors_model.dart';
+
 class UsersModel{
   int id;
   String firstName;
@@ -156,3 +158,128 @@ class Bookings{
   }
 }
 
+class CheckList{
+  int id;
+  int orderNumber;
+  String content;
+  String dateAndTime;
+  bool status;
+  bool isPassed;
+
+  CheckList({
+    this.id,
+    this.status,
+    this.content,
+    this.dateAndTime,
+    this.isPassed,
+    this.orderNumber,
+});
+
+  factory CheckList.fromJson(dynamic json){
+    return CheckList(
+      id: json['id'],
+      orderNumber: json['order_number'],
+      dateAndTime: json['date_and_time'],
+      status: json['status'],
+      isPassed: json['is_passed'],
+      content: json['content']
+    );
+  }
+}
+
+class Chats{
+  int id;
+  String sentTime;
+  String message;
+  String sender;
+  bool readStatus;
+  VendorsModel vendor;
+
+  Chats({
+   this.id,
+   this.vendor,
+   this.message,
+   this.readStatus,
+   this.sentTime,
+   this.sender,
+});
+
+  factory Chats.fromJson(dynamic json){
+    return Chats(
+      id: json['id'],
+      sender: json['sender'],
+      sentTime: json['sent_time'],
+      message: json['message'],
+      readStatus: json['read_status'],
+      vendor: VendorsModel.fromJson(json['vendor'])
+    );
+  }
+}
+
+class Budget{
+  int id;
+  double amount;
+  List pricings = <BudgetPricing>[];
+
+  Budget({
+    this.id,
+    this.amount,
+    this.pricings
+});
+
+  factory Budget.fromJson(dynamic json){
+    return Budget(
+      id: json['id'],
+      amount: json['amount']
+    );
+  }
+}
+
+class BudgetPricing{
+  int id;
+  String title;
+  String detail;
+  double value;
+  VendorsModel vendor;
+
+  BudgetPricing({
+    this.id,
+    this.vendor,
+    this.value,
+    this.title,
+    this.detail
+});
+
+  factory BudgetPricing.fromJson(dynamic json){
+    return BudgetPricing(
+      id: json['id'],
+      vendor: VendorsModel.fromJson(json['vendor']),
+      title: json['title'],
+      value: json['value'],
+      detail: json['detail']
+    );
+  }
+}
+
+class Counts{
+  int chatCunt;
+  int notCount;
+  VendorsModel randVendor;
+  double ratingCount;
+
+  Counts({
+    this.chatCunt,
+    this.notCount,
+    this.randVendor,
+    this.ratingCount
+});
+
+  factory Counts.fromJson(dynamic json){
+    return Counts(
+      chatCunt: json['chat_count'],
+      notCount: json['not_count'],
+      randVendor: VendorsModel.fromJson(json['ran_vendor']),
+    );
+  }
+
+}

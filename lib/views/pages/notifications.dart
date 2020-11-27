@@ -38,6 +38,14 @@ class _UserNotificationsState extends State<UserNotifications> {
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text("Notifications"),),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.redo),
+            onPressed: (){
+              _fetchNtfs();
+            },
+          ),
+        ],
       ),
       body: Builder(
         builder: (_){

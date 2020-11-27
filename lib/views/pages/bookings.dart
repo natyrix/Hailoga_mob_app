@@ -75,6 +75,14 @@ class _UsersBookingsState extends State<UsersBookings> {
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text("Bookings"),),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.redo),
+            onPressed: (){
+              _fetchBkgs();
+            },
+          ),
+        ],
       ),
       body: Builder(
         builder: (_){

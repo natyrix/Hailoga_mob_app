@@ -1,29 +1,33 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hailoga/models/api_response.dart';
+import 'package:hailoga/models/users_model.dart';
 import 'package:hailoga/models/vendors_model.dart';
-import 'package:hailoga/services/vendor_service.dart';
+import 'package:hailoga/services/users_service.dart';
 
-class MakeAppointment extends StatefulWidget {
-  final VendorsModel vendor;
-
-  const MakeAppointment({Key key, this.vendor}) : super(key: key);
+class AddCheckList extends StatefulWidget {
   @override
-  _MakeAppointmentState createState() => _MakeAppointmentState();
+  _AddCheckListState createState() => _AddCheckListState();
 }
 
-class _MakeAppointmentState extends State<MakeAppointment> {
-  VendorsService get service => GetIt.I<VendorsService>();
+class _AddCheckListState extends State<AddCheckList> {
+  UsersService get service => GetIt.I<UsersService>();
   APIResponse<Message> _apiResponse;
   bool _isLoading = false;
 
+  ScrollController _controller = ScrollController();
+
   DateTime selectedDate = DateTime.now();
-  TimeOfDay selectedStartTime = TimeOfDay(hour: 00, minute: 00);
-  TimeOfDay selectedEndTime = TimeOfDay(hour: 01, minute: 00);
-  String startHr, startMin = '';
-  String endHr, endMin = '';
-  String _errs = 'Appointment date can not be set to today';
+  TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
+  TextEditingController contentController = TextEditingController();
+  TextEditingController orderNumberController = TextEditingController();
+  String timeHr, timeMin = '';
+  String _errs = 'CheckList date can not be set to today';
   bool _dateValid = true;
+  bool isorderr = false;
+  bool isconerr = false;
 
   Future<Null> _selectDate(BuildContext context) async{
     final DateTime picked = await showDatePicker(
@@ -43,7 +47,7 @@ class _MakeAppointmentState extends State<MakeAppointment> {
       else{
         setState(() {
           _dateValid = false;
-          _errs = 'Appointment date can not be set to today';
+          _errs = 'CheckList date can not be set to today';
         });
       }
 
@@ -52,37 +56,22 @@ class _MakeAppointmentState extends State<MakeAppointment> {
   Future<Null> _selectStartTime(BuildContext context) async{
     final TimeOfDay picked = await showTimePicker(
       context: context,
-      initialTime: selectedStartTime,
+      initialTime: selectedTime,
     );
     if(picked!=null){
       setState(() {
-        selectedStartTime = picked;
-        startHr = selectedStartTime.hour<10?"0${selectedStartTime.hour}":"${selectedStartTime.hour}";
-        startMin = selectedStartTime.minute<10?"0${selectedStartTime.minute}":"${selectedStartTime.minute}";
-      });
-    }
-  }
-  Future<Null> _selectEndTime(BuildContext context) async{
-    final TimeOfDay picked = await showTimePicker(
-      context: context,
-      initialTime: selectedStartTime,
-    );
-    if(picked!=null){
-      setState(() {
-        selectedEndTime = picked;
-        endHr = selectedEndTime.hour<10?"0${selectedEndTime.hour}":"${selectedEndTime.hour}";
-        endMin = selectedEndTime.minute<10?"0${selectedEndTime.minute}":"${selectedEndTime.minute}";
+        selectedTime = picked;
+        timeHr = selectedTime.hour<10?"0${selectedTime.hour}":"${selectedTime.hour}";
+        timeMin = selectedTime.minute<10?"0${selectedTime.minute}":"${selectedTime.minute}";
       });
     }
   }
 
-  _makeAppt() async{
+  _addCheckList() async{
     setState(() {
       _isLoading = true;
     });
-
-    _apiResponse = await service.makeAppointment(selectedDate, selectedStartTime, selectedEndTime, widget.vendor.id);
-
+    _apiResponse = await service.addChk(int.parse(orderNumberController.text), contentController.text, '${selectedDate.toString().split(' ')[0]} ${selectedTime.hour}:${selectedTime.minute}:00.0');
     setState(() {
       _isLoading = false;
     });
@@ -93,18 +82,22 @@ class _MakeAppointmentState extends State<MakeAppointment> {
           _dateValid = false;
           _errs = _apiResponse.errorMessage;
         });
+        Timer(Duration(milliseconds: 500), () => _controller.jumpTo(_controller.position.maxScrollExtent));
       }
       else{
-        Future.delayed(Duration(seconds: 2), Navigator.of(context).pop);
+        Future.delayed(Duration(seconds: 1),popDialog);
       }
     }
+  }
+  void popDialog(){
+    Navigator.pop(context,1);
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       elevation: 4,
-      title: Text("Make appointment with ${widget.vendor.name}"),
+      title: Text("Add CheckList"),
       content: Builder(
         builder: (_){
           if(_isLoading){
@@ -115,12 +108,14 @@ class _MakeAppointmentState extends State<MakeAppointment> {
               return Text(_apiResponse.data.message);
             }
           }
+
           return Container(
             height: 250,
             child: ListView(
+              controller: _controller,
               children: [
                 Text(
-                  "Choose Appointment Date: ",
+                  "Choose Date: ",
                   style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.w600,
@@ -142,7 +137,7 @@ class _MakeAppointmentState extends State<MakeAppointment> {
                 ),
                 SizedBox(height: 12,),
                 Text(
-                  "Choose Appointment Start Time: ",
+                  "Choose Time: ",
                   style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.w600,
@@ -157,34 +152,60 @@ class _MakeAppointmentState extends State<MakeAppointment> {
                   child: Container(
                       padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(color: Colors.grey[200]),
-                      child: startHr==null?Text("Select time"):Text("$startHr:$startMin")
+                      child: timeHr==null?Text("Select time"):Text("$timeHr:$timeMin")
                   ),
                 ),
                 SizedBox(height: 12,),
-                Text(
-                  "Choose Appointment End Time: ",
-                  style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5
+                Theme(
+                  data: ThemeData(
+                      primaryColor: Colors.blue
+                  ),
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                    controller: orderNumberController,
+                    decoration: InputDecoration(
+                        focusedBorder: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.blue)),
+                        border: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)
+                        ),
+                        labelText: 'Order number',
+                        errorText: isorderr?"Required":null
+                    ),
                   ),
                 ),
                 SizedBox(height: 12,),
-                InkWell(
-                  onTap: (){
-                    _selectEndTime(context);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(color: Colors.grey[200]),
-                    child: endHr==null?Text("Select time"):Text("$endHr:$endMin"),
+
+                Theme(
+                  data: ThemeData(
+                      primaryColor: Colors.blue
+                  ),
+                  child: TextField(
+                    maxLines: 8,
+                    keyboardType: TextInputType.multiline,
+                    controller: contentController,
+                    decoration: InputDecoration(
+                        focusedBorder: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.blue)),
+                        border: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)
+                        ),
+                        labelText: 'Content',
+                        errorText: isconerr?"Required":null
+                    ),
                   ),
                 ),
+                SizedBox(height: 12,),
                 Center(
                   child: Text(
                     _dateValid?'':_errs,
                     style: TextStyle(
-                      color: Colors.redAccent
+                        color: Colors.redAccent
                     ),
                   ),
                 )
@@ -202,24 +223,20 @@ class _MakeAppointmentState extends State<MakeAppointment> {
         ),
         FlatButton(
           onPressed: () {
-            if(selectedDate.compareTo(DateTime.now())>0){
-              if(selectedStartTime.hour<selectedEndTime.hour){
-                _makeAppt();
-              }
-              else{
-                setState(() {
-                  _dateValid = false;
-                  _errs = "There has to be at least an hour gap between start and end time";
-                });
-              }
+            setState(() {
+              contentController.text.isEmpty?isconerr=true:isconerr=false;
+              orderNumberController.text.isEmpty?isorderr=true:isorderr=false;
+            });
+            if(selectedDate.compareTo(DateTime.now())>0 && !isconerr && !isorderr){
+              _addCheckList();
             }
-            else{
+            else if(!(selectedDate.compareTo(DateTime.now())>0)){
               setState(() {
                 _dateValid = false;
               });
             }
           },
-          child: Text("Save"),
+          child: Text("Add"),
         ),
       ],
     );

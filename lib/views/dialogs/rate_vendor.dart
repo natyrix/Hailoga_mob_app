@@ -71,7 +71,7 @@ class _RateVendorState extends State<RateVendor> {
       content: Builder(
         builder: (_){
           if(_isLoading){
-            return Center(child: CircularProgressIndicator());
+            return SizedBox(height:100,child: Center(child: CircularProgressIndicator()));
           }
           if(_apiResponse.error){
             return Text(_apiResponse.errorMessage);

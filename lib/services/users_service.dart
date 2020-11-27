@@ -378,6 +378,171 @@ class UsersService{
     return deleteImgNoToken();
   }
 
+  Future<APIResponse<List<CheckList>>> getCheckLists(){
+    String API = '${APIAddress.api}/api/v1/users/checklists/';
+    if(token!=null){
+      var headers = {
+        'Authorization': 'Token $token',
+      };
+      return http.get(API, headers: headers)
+          .then((data) {
+        if(data.statusCode == 200){
+          final jsonData = json.decode(data.body);
+          final chks = <CheckList>[];
+          for(var chk in jsonData){
+            chks.add(CheckList.fromJson(chk));
+          }
+          return APIResponse<List<CheckList>>(data: chks);
+        }
+        final jsonData = json.decode(data.body);
+        return APIResponse<List<CheckList>>(error: true, errorMessage: jsonData['message']);
+      }).catchError((error)=>APIResponse<List<CheckList>>(error: true, errorMessage: '$error'));
+    }
+    return getCheckListNoToken();
+  }
+  Future<APIResponse<List<CheckList>>> getCheckListNoToken() async{
+    return await APIResponse<List<CheckList>>(error: true,errorMessage: 'Unable to read provided token');
+  }
+
+  Future<APIResponse<Message>> EditChk(CheckList checkList){
+    String api = '${APIAddress.api}/api/v1/users/checklist/update/${checkList.id}/';
+    if(token!=null){
+      var headers = {
+        'Authorization': 'Token $token',
+      };
+      var map = Map<String, dynamic>();
+      map['order_number'] = checkList.orderNumber.toString();
+      map['content'] = checkList.content;
+      map['chk_date'] = checkList.dateAndTime;
+      map['status'] = checkList.status.toString();
+      return http.patch(api, headers: headers, body: map)
+          .then((data) {
+        if(data.statusCode == 200){
+          final jsonData = json.decode(data.body);
+          return APIResponse<Message>(data: Message(
+              message: jsonData['message']
+          ));
+        }
+        final jsonData = json.decode(data.body);
+        print(jsonData);
+        return APIResponse<Message>(error: true,errorMessage: jsonData['message']);
+      }).catchError((error)=>APIResponse<Message>(error: true,errorMessage: '$error'));
+    }
+    return deleteImgNoToken();
+  }
+
+  Future<APIResponse<Message>> addChk(orderNumber, content, dateAndTime){
+    String api = '${APIAddress.api}/api/v1/users/checklists/';
+    if(token!=null){
+      var headers = {
+        'Authorization': 'Token $token',
+      };
+      var map = Map<String, dynamic>();
+      map['order_number'] = orderNumber.toString();
+      map['content'] = content;
+      map['chk_date'] = dateAndTime;
+      return http.post(api, headers: headers, body: map)
+          .then((data) {
+        if(data.statusCode == 200){
+          final jsonData = json.decode(data.body);
+          return APIResponse<Message>(data: Message(
+              message: jsonData['message']
+          ));
+        }
+        final jsonData = json.decode(data.body);
+        print(jsonData);
+        return APIResponse<Message>(error: true,errorMessage: jsonData['message']);
+      }).catchError((error)=>APIResponse<Message>(error: true,errorMessage: '$error'));
+    }
+    return deleteImgNoToken();
+  }
+
+  Future<APIResponse<List<Chats>>> getChats(){
+    String API = '${APIAddress.api}/api/v1/users/chats/';
+    if(token!=null){
+      var headers = {
+        'Authorization': 'Token $token',
+      };
+      return http.get(API, headers: headers)
+          .then((data) {
+        if(data.statusCode == 200){
+          final jsonData = json.decode(data.body);
+          final chts = <Chats>[];
+          for(var cht in jsonData){
+            chts.add(Chats.fromJson(cht));
+          }
+          return APIResponse<List<Chats>>(data: chts);
+        }
+        final jsonData = json.decode(data.body);
+        return APIResponse<List<Chats>>(error: true, errorMessage: jsonData['message']);
+      }).catchError((error)=>APIResponse<List<Chats>>(error: true, errorMessage: '$error'));
+    }
+    return getChatsNoToken();
+  }
+  Future<APIResponse<List<Chats>>> getChatsNoToken() async{
+    return await APIResponse<List<Chats>>(error: true,errorMessage: 'Unable to read provided token');
+  }
+
+  Future<APIResponse<List<Budget>>> getBudgets(){
+    String API = '${APIAddress.api}/api/v1/users/budgets/';
+    if(token!=null){
+      var headers = {
+        'Authorization': 'Token $token',
+      };
+      return http.get(API, headers: headers)
+          .then((data) {
+        if(data.statusCode == 200){
+          final jsonData = json.decode(data.body);
+          final bdgts = <Budget>[];
+          Budget budget;
+          for(var bdg in jsonData){
+            budget = Budget.fromJson(bdg);
+            final bdgtPricings = <BudgetPricing>[];
+            for(var pricing in bdg['pricings']){
+              bdgtPricings.add(BudgetPricing.fromJson(pricing));
+            }
+            budget.pricings = bdgtPricings;
+            bdgts.add(budget);
+          }
+          return APIResponse<List<Budget>>(data: bdgts);
+        }
+        final jsonData = json.decode(data.body);
+        return APIResponse<List<Budget>>(error: true, errorMessage: jsonData['message']);
+      }).catchError((error)=>APIResponse<List<Budget>>(error: true, errorMessage: '$error'));
+    }
+    return getBudgetsNoToken();
+  }
+  Future<APIResponse<List<Budget>>> getBudgetsNoToken() async{
+    return await APIResponse<List<Budget>>(error: true,errorMessage: 'Unable to read provided token');
+  }
+
+  Future<APIResponse<Counts>> home(){
+    String api = '${APIAddress.api}/api/v1/users/home/';
+    if(token!=null){
+      var headers = {
+        'Authorization': 'Token $token',
+      };
+      return http.get(api, headers: headers)
+          .then((data) {
+        if(data.statusCode == 200){
+          final jsonData = json.decode(data.body);
+          return APIResponse<Counts>(data: Counts(
+            chatCunt: jsonData['chat_count'],
+            notCount: jsonData['not_count'],
+            randVendor: VendorsModel.fromJson(jsonData['ran_vendor']),
+            ratingCount: jsonData['rating_val']
+          ));
+        }
+        final jsonData = json.decode(data.body);
+        print(jsonData);
+        return APIResponse<Counts>(error: true,errorMessage: jsonData['message']);
+      }).catchError((error)=>APIResponse<Counts>(error: true,errorMessage: '$error'));
+    }
+    return homeNoToken();
+  }
+  Future<APIResponse<Counts>> homeNoToken() async{
+    return await APIResponse<Counts>(error: true,errorMessage: 'Unable to read provided token');
+  }
 }
 
 

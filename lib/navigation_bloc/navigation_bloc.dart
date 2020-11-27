@@ -2,6 +2,9 @@ import 'package:bloc/bloc.dart';
 import 'package:hailoga/views//pages/homepage.dart';
 import 'package:hailoga/views/pages/appointmetns.dart';
 import 'package:hailoga/views/pages/bookings.dart';
+import 'package:hailoga/views/pages/budgets.dart';
+import 'package:hailoga/views/pages/chats.dart';
+import 'package:hailoga/views/pages/check_lists.dart';
 import 'package:hailoga/views/pages/gallery.dart';
 import 'package:hailoga/views/pages/myaccounts.dart';
 import 'package:hailoga/views/pages/myorders.dart';
@@ -9,7 +12,8 @@ import 'package:hailoga/views/pages/notifications.dart';
 import 'package:hailoga/views/pages/vendors.dart';
 
 enum NavigationEvents{HomePageClickedEvent, MyAccountClickedEvent,MyOrdersClickedEvent,
-  VendorsClickedEvent, GalleryClickedEvent, NotificationClickedEvent, AppointmentsClickedEvent, BookingsClickedEvent}
+  VendorsClickedEvent, GalleryClickedEvent, NotificationClickedEvent,
+  AppointmentsClickedEvent, BookingsClickedEvent, CheckListsClickedEvent, ChatClickedEvent, BudgetClickedEvent}
 
 abstract class NavigationStates{}
 class NavigationBloc extends Bloc<NavigationEvents, NavigationStates>{
@@ -42,6 +46,15 @@ class NavigationBloc extends Bloc<NavigationEvents, NavigationStates>{
         break;
       case NavigationEvents.BookingsClickedEvent:
         yield UsersBookings();
+        break;
+      case NavigationEvents.CheckListsClickedEvent:
+        yield CheckLists();
+        break;
+      case NavigationEvents.ChatClickedEvent:
+        yield UsersChats();
+        break;
+      case NavigationEvents.BudgetClickedEvent:
+        yield UsersBudgets();
         break;
     }
   }

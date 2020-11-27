@@ -35,6 +35,8 @@ dependencies:
   date_format: ^1.0.9
   video_player: ^1.0.0
   image_picker: ^0.6.7+14
+  multiselect_formfield: ^0.1.5
+  flutter_countdown_timer: ^1.4.0
 
 
 

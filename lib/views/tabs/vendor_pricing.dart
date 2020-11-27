@@ -5,7 +5,7 @@ import 'package:hailoga/models/vendors_model.dart';
 import 'package:hailoga/services/vendor_service.dart';
 import 'package:humanize/humanize.dart' as humanize;
 
-class VendorPricing extends StatefulWidget {
+class VendorPricing extends StatefulWidget{
   final VendorsModel vendor;
 
   const VendorPricing({Key key, this.vendor}) : super(key: key);

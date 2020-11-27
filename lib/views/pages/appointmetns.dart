@@ -74,6 +74,14 @@ class _UsersAppointmentsState extends State<UsersAppointments> {
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text("Appointments"),),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.redo),
+            onPressed: (){
+              _fetchAppts();
+            },
+          ),
+        ],
       ),
       body: Builder(
         builder: (_){

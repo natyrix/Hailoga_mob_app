@@ -115,7 +115,7 @@ class _AddImageState extends State<AddImage> {
       content: Builder(
         builder: (_){
           if(_isLoading){
-            return Center(child: CircularProgressIndicator(),);
+            return SizedBox(height:100,child: Center(child: CircularProgressIndicator()));
           }
           if(_apiResponse!=null){
             if(_apiResponse.error){

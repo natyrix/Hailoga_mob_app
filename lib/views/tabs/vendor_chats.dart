@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hailoga/models/api_response.dart';
 import 'package:hailoga/models/vendors_model.dart';
@@ -19,6 +22,9 @@ class _VendorChat extends State<VendorChat> {
   APIResponse<List<VendorChats>> _apiResponse;
   bool _isLoading = false;
 
+  ScrollController _controller = ScrollController();
+
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +42,7 @@ class _VendorChat extends State<VendorChat> {
   }
   @override
   Widget build(BuildContext context) {
+    Timer(Duration(milliseconds: 500), () => _controller.jumpTo(_controller.position.maxScrollExtent));
     return Scaffold(
       body: Builder(
         builder: (_){
@@ -45,70 +52,17 @@ class _VendorChat extends State<VendorChat> {
           if(_apiResponse.error){
             return Center(child: Text(_apiResponse.errorMessage),);
           }
-          return Container(
-            child: Stack(
-              children:[
-                ListView.builder(
-                  itemBuilder: (context, index){
-                    return MessageTile(
-                      message: _apiResponse.data[index],
-                      sendByMe: _apiResponse.data[index].sender == 'Users'
-                    );
-                  },
-                  itemCount: _apiResponse.data.length,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-
-                  ),
-                  alignment: Alignment.bottomCenter,
-                  width: MediaQuery.of(context).size.width,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-                    color: Color(0x54FFFFFF),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: msgContent,
-                            decoration: InputDecoration(
-                              hintText: "Message...",
-                              hintStyle: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16
-                              ),
-                              border: InputBorder.none
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 16,),
-                        GestureDetector(
-                          onTap: () {
-//                            addMessage();
-                          },
-                          child: Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                      colors: [
-                                        const Color(0x36FFFFFF),
-                                        const Color(0x0FFFFFFF)
-                                      ],
-                                      begin: FractionalOffset.topLeft,
-                                      end: FractionalOffset.bottomRight
-                                  ),
-                                  borderRadius: BorderRadius.circular(40)
-                              ),
-                              padding: EdgeInsets.all(12),
-                              child: Icon(Icons.send)),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-            ]
-            ),
+          return ListView.builder(
+            controller: _controller,
+            itemBuilder: (context, index){
+              return MessageTile(
+                message: _apiResponse.data[index],
+                sendByMe: _apiResponse.data[index].sender == 'Users'
+              );
+            },
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            itemCount: _apiResponse.data.length,
           );
         },
       )
@@ -162,6 +116,7 @@ class MessageTile extends StatelessWidget {
             )
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(message.message,
               textAlign: TextAlign.start,
@@ -179,6 +134,10 @@ class MessageTile extends StatelessWidget {
                     fontFamily: 'OverpassRegular',
                     fontWeight: FontWeight.w300)
             ),
+            (message.sender=="Users")?
+            (message.readStatus)?Icon(Icons.done_all,color: Colors.white,size: 10,)
+                :Icon(Icons.done,color: Colors.white,size: 10,)
+                :Text("")
           ],
         ),
       ),

@@ -35,6 +35,33 @@ class VendorsService{
 
     return await APIResponse<List<VendorsModel>>(error: true, errorMessage: "Unable to read provided token");
   }
+  Future<APIResponse<List<VendorsModel>>> filterVendors(category){
+    if(token!=null) {
+      var headers = {
+        'Authorization': 'Token $token',
+      };
+      var map = Map<String, dynamic>();
+      map['category'] = category;
+      return http.post(API,headers: headers, body: map)
+          .then((data) {
+        if(data.statusCode == 200){
+          final jsonData = json.decode(data.body);
+          final vendors = <VendorsModel>[];
+          for(var v in jsonData['data']){
+            vendors.add(VendorsModel.fromJson(v));
+          }
+          Ratings.ratings = jsonData['ratings'];
+          return APIResponse<List<VendorsModel>>(data: vendors);
+        }
+        final jsonData = json.decode(data.body);
+        return APIResponse<List<VendorsModel>>(error: true,errorMessage: jsonData['detail']);
+      }).catchError((error)=>APIResponse<List<VendorsModel>>(error: true, errorMessage: '$error'));
+    }
+    return getvNoToken();
+  }
+
+
+
   Future<APIResponse<Message>> sendMsg(msgContent, v_id){
     String api = '${APIAddress.api}/api/v1/vendors/send_msg/$v_id/';
     if(token!=null){
@@ -333,6 +360,88 @@ class VendorsService{
   }
   Future<APIResponse<Message>> reviewVNoToken() async{
     return await APIResponse<Message>(error: true, errorMessage: "Unable to read provided token, failed to load data");
+  }
+
+  Future<APIResponse<Message>> makeAppointment(apptDate, startTime, endTime, v_id){
+    String api = '${APIAddress.api}/api/v1/vendors/appts/$v_id/';
+    if(token!=null){
+      var headers = {
+        'Authorization': 'Token $token',
+      };
+      var map = new Map<String, dynamic>();
+      map['appt_date'] = apptDate.toString();
+      map['start_time'] = startTime.toString();
+      map['end_time'] = endTime.toString();
+      return http.post(api, body: map, headers: headers)
+          .then((data){
+        if(data.statusCode == 200){
+          final jsonData = json.decode(data.body);
+          return APIResponse<Message>(
+              data: Message(
+                  message: jsonData['message']
+              )
+          );
+        }
+        final jsonData = json.decode(data.body);
+        return APIResponse<Message>(error: true, errorMessage: jsonData['message']);
+      })
+          .catchError((error)=>APIResponse<Message>(error: true, errorMessage: '$error'));
+    }
+    return reviewVNoToken();
+  }
+
+  Future<APIResponse<Message>> makeBooking(bkgDate, startTime, endTime, v_id){
+    String api = '${APIAddress.api}/api/v1/vendors/bookings/$v_id/';
+    if(token!=null){
+      var headers = {
+        'Authorization': 'Token $token',
+      };
+      var map = new Map<String, dynamic>();
+      map['bkg_date'] = bkgDate.toString();
+      map['start_time'] = startTime.toString();
+      map['end_time'] = endTime.toString();
+      return http.post(api, body: map, headers: headers)
+          .then((data){
+        if(data.statusCode == 200){
+          final jsonData = json.decode(data.body);
+          return APIResponse<Message>(
+              data: Message(
+                  message: jsonData['message']
+              )
+          );
+        }
+        final jsonData = json.decode(data.body);
+        return APIResponse<Message>(error: true, errorMessage: jsonData['message']);
+      })
+          .catchError((error)=>APIResponse<Message>(error: true, errorMessage: '$error'));
+    }
+    return reviewVNoToken();
+  }
+
+  Future<APIResponse<List<CategoryModel>>> getCategories(){
+    String api = '${APIAddress.api}/api/v1/vendors/categories/';
+    if(token!=null){
+      var headers = {
+        'Authorization': 'Token $token',
+      };
+      return http.get(api, headers: headers)
+          .then((data) {
+        if(data.statusCode == 200){
+          final jsonData = json.decode(data.body);
+          final cats = <CategoryModel>[];
+          for(var cat in jsonData){
+            cats.add(CategoryModel.fromJson(cat));
+          }
+          return APIResponse<List<CategoryModel>>(data: cats);
+        }
+        final jsonData = json.decode(data.body);
+        return APIResponse<List<CategoryModel>>(error: true, errorMessage: jsonData['message']);
+      }).catchError((error)=>APIResponse<List<CategoryModel>>(error: true, errorMessage: '$error'));
+    }
+    return getCatNoToken();
+  }
+  Future<APIResponse<List<CategoryModel>>> getCatNoToken() async{
+    return await APIResponse<List<CategoryModel>>(error: true, errorMessage: "Unable to read provided token, failed to load data");
   }
 
 }

@@ -4,6 +4,7 @@ import 'package:hailoga/views/dialogs/make_appointment.dart';
 import 'package:hailoga/views/dialogs/make_booking.dart';
 import 'package:hailoga/views/dialogs/rate_vendor.dart';
 import 'package:hailoga/views/dialogs/review_vendor.dart';
+import 'package:hailoga/views/dialogs/send_msg.dart';
 import 'package:hailoga/views/tabs/vendor_appt.dart';
 import 'package:hailoga/views/tabs/vendor_booking.dart';
 import 'package:hailoga/views/tabs/vendor_chats.dart';
@@ -31,11 +32,12 @@ class _VendorState extends State<Vendor> {
       RateVendor(vendor: widget.vendor,),
       ReviewVendor(vendor: widget.vendor,),
       MakeAppointment(vendor: widget.vendor,),
-      MakeBooking(vendor: widget.vendor,)
+      MakeBooking(vendor: widget.vendor,),
+      SendMessage(vendor: widget.vendor,)
     ];
     return showDialog(
 //      barrierColor: Colors.white.withOpacity(0),
-      barrierDismissible: false,
+//      barrierDismissible: false,
       context: context,
       builder: (context){
         return WillPopScope(
@@ -57,15 +59,10 @@ class _VendorState extends State<Vendor> {
             padding: EdgeInsets.only(right: 15),
             child: GestureDetector(
               onTap: (){
-//                Navigator.of(context).push(
-//                  PageRouteBuilder(
-//                    pageBuilder: (context, _, __)=>RateVendor(vendor: widget.vendor,),
-//                    opaque: false
-//                  ),
-//                );
+                _displayRateDialog(context, 4);
               },
               child: Icon(
-                Icons.message,
+                Icons.message_outlined,
                 size: 26,
               ),
             ),

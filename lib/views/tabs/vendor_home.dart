@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hailoga/models/vendors_model.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:hailoga/services/helpers.dart';
-import 'package:hailoga/views/send_msg.dart';
+
 
 class VendorHome extends StatefulWidget {
   final VendorsModel vendor;

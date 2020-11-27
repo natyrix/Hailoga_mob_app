@@ -16,6 +16,23 @@ class _VendorsState extends State<Vendors> {
   VendorsService get service => GetIt.I<VendorsService>();
   APIResponse<List<VendorsModel>> _apiResponse;
   bool _isLoading = false;
+  String _curCat = 'All';
+
+  void changedDropDownItem(String selectedCat) async{
+    if(_curCat !=selectedCat){
+      setState(() {
+        _curCat = selectedCat;
+      });
+      setState(() {
+        _isLoading = true;
+      });
+      _apiResponse = await service.filterVendors(selectedCat);
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   void initState(){
     _fetchVendors();
@@ -37,6 +54,27 @@ class _VendorsState extends State<Vendors> {
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text('Vendors')),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.redo),
+            onPressed: (){
+              _fetchVendors();
+            },
+          ),
+          PopupMenuButton<Choices>(
+            onSelected: (Choices value){
+              changedDropDownItem(value.title);
+            },
+            itemBuilder: (BuildContext context){
+              return choices.map((Choices ch){
+                return PopupMenuItem<Choices>(
+                  value: ch,
+                  child: Text(ch.title),
+                );
+              }).toList();
+            },
+          )
+        ],
       ),
       body: Builder(
         builder: (_){
@@ -47,6 +85,7 @@ class _VendorsState extends State<Vendors> {
             return Center(child: Text(_apiResponse.errorMessage),);
           }
           return ListView.separated(
+            shrinkWrap: true,
             itemBuilder: (_, index){
               return VendorCard(
                 key:ValueKey(_apiResponse.data[index].id),
@@ -62,3 +101,24 @@ class _VendorsState extends State<Vendors> {
     );
   }
 }
+
+class Choices {
+  final String title;
+  final int index;
+
+  const Choices({
+    this.title,
+    this.index
+  });
+}
+
+const List<Choices> choices = const <Choices>[
+  const Choices(title:"All", index: 0),
+  const Choices(title:"Hair and Makeup", index: 1),
+  const Choices(title:"Venue", index: 2),
+  const Choices(title:"Invitation Card", index: 3),
+  const Choices(title:"Decor", index: 3),
+  const Choices(title:"Catering", index: 3),
+  const Choices(title:"Wedding Cake", index: 3),
+];
+

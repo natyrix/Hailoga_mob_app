@@ -104,11 +104,27 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                               endIndent: 16,
                             ),
                             MenuItem(
+                              icon: Icons.home,
+                              title: "Home",
+                              onTap: (){
+                                onIconPressed();
+                                BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.HomePageClickedEvent);
+                              },
+                            ),
+                            MenuItem(
                               icon: Icons.horizontal_split,
                               title: "Vendors",
                               onTap: (){
                                 onIconPressed();
                                 BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.VendorsClickedEvent);
+                              },
+                            ),
+                            MenuItem(
+                              icon: Icons.chat_bubble_rounded,
+                              title: "Chats",
+                              onTap: (){
+                                onIconPressed();
+                                BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.ChatClickedEvent);
                               },
                             ),
                             MenuItem(
@@ -136,16 +152,20 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                               },
                             ),
                             MenuItem(
-                              icon: Icons.shopping_basket,
-                              title: "My Orders",
+                              icon: Icons.money,
+                              title: "Budget",
                               onTap: (){
                                 onIconPressed();
-                                BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyOrdersClickedEvent);
+                                BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.BudgetClickedEvent);
                               },
                             ),
                             MenuItem(
-                              icon: Icons.card_giftcard,
-                              title: "Wishlist",
+                              icon: Icons.calendar_today_outlined,
+                              title: "CheckLists",
+                              onTap: (){
+                                onIconPressed();
+                                BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.CheckListsClickedEvent);
+                              },
                             ),
                             MenuItem(
                               icon: Icons.notifications,
@@ -169,10 +189,6 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                                 onIconPressed();
                                 BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyAccountClickedEvent);
                               },
-                            ),
-                            MenuItem(
-                              icon: Icons.settings,
-                              title: "Settings",
                             ),
                             MenuItem(
                               icon: Icons.exit_to_app,
