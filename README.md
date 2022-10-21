@@ -2,6 +2,9 @@
 
 A new Flutter project.
 
+## A wedding planner web app and mobile app (HTML5/JS, Django(Python), MySQL), Flutter for the mobile app.
+
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
